@@ -13,6 +13,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 
+if(MINGW)
+    set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_mixer)
+endif()
+
 add_definitions(-Wall -D_REENTRANT -D_THREAD_SAFE)
 
 add_executable(sdl2-doom src/i_main.c src/dummy.c src/am_map.c src/doomdef.c src/doomstat.c src/dstrings.c src/d_event.c
