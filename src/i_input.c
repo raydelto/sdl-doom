@@ -20,7 +20,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "config.h"
 #include "deh_str.h"
@@ -71,19 +71,19 @@ static unsigned char toDoomKey(unsigned int key)
     case SDLK_ESCAPE:
       key = KEY_ESCAPE;
       break;
-    case SDLK_a:
+    case SDLK_A:
     case SDLK_LEFT:
       key = KEY_LEFTARROW;
       break;
-    case SDLK_d:
+    case SDLK_D:
     case SDLK_RIGHT:
       key = KEY_RIGHTARROW;
       break;
-    case SDLK_w:
+    case SDLK_W:
     case SDLK_UP:
       key = KEY_UPARROW;
       break;
-    case SDLK_s:
+    case SDLK_S:
     case SDLK_DOWN:
       key = KEY_DOWNARROW;
       break;
@@ -129,28 +129,28 @@ static void SDL_PollEvents()
 
   while (SDL_PollEvent(&e))
   {
-    if (e.type == SDL_QUIT)
+    if (e.type == SDL_EVENT_QUIT)
     {
-      atexit(SDL_Quit);
+      SDL_Quit();
       exit(1);
     }
 
-    if (e.type == SDL_KEYDOWN) 
+    if (e.type == SDL_EVENT_KEY_DOWN) 
     {
       //printf("KeyPress:%d sym:%d\n", e.xkey.keycode, sym);
-      queueKeyPress(1, e.key.keysym.sym);
+      queueKeyPress(1, e.key.key);
     } 
-    else if (e.type == SDL_KEYUP) 
+    else if (e.type == SDL_EVENT_KEY_UP) 
     {
       //printf("KeyRelease:%d sym:%d\n", e.xkey.keycode, sym);
-      queueKeyPress(0, e.key.keysym.sym);
+      queueKeyPress(0, e.key.key);
     }
-    else if(e.type == SDL_MOUSEBUTTONDOWN) 
+    else if(e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) 
     {
       //printf("SDL_MOUSE_PRESSED: %d\n", e.button.button);
       queueKeyPress(1, e.button.button);
     }
-    else if(e.type == SDL_MOUSEBUTTONUP)
+    else if(e.type == SDL_EVENT_MOUSE_BUTTON_UP)
     {
       //printf("SDL_MOUSE_RELEASED: %d\n", e.button.button);
       queueKeyPress(0, e.button.button);

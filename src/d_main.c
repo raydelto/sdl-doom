@@ -1607,7 +1607,6 @@ void D_DoomMain (void)
 
     DEH_printf("I_Init: Setting up machine state.\n");
     I_CheckIsScreensaver();
-    I_InitTimer();
     I_InitJoystick();
     I_InitSound(true);
     I_InitMusic();

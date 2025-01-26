@@ -21,7 +21,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 
 //
@@ -76,16 +76,3 @@ void I_WaitVBL(int count)
 {
     //I_Sleep((count * 1000) / 70);
 }
-
-
-void I_InitTimer(void)
-{
-    printf("I_InitTimer: Setting up timer.\n");
-    if (SDL_Init(SDL_INIT_TIMER) < 0)
-	{
-          printf("SDL_Init failed: %s\n", SDL_GetError());
-          atexit(SDL_Quit);
-          exit(1);
-    }
-}
-

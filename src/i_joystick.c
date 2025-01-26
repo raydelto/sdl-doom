@@ -16,7 +16,7 @@
 //
 
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -75,7 +75,7 @@ void I_ShutdownJoystick(void)
 
     if (joystick != NULL)
     {
-        SDL_JoystickClose(joystick);
+        SDL_CloseJoystick(joystick);
         joystick = NULL;
         SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
     }
@@ -99,10 +99,10 @@ static boolean IsValidAxis(int axis)
 
     if (IS_HAT_AXIS(axis))
     {
-        return HAT_AXIS_HAT(axis) < SDL_JoystickNumHats(joystick);
+        return HAT_AXIS_HAT(axis) < SDL_GetNumJoystickHats(joystick);
     }
 
-    num_axes = SDL_JoystickNumAxes(joystick);
+    num_axes = SDL_GetNumJoystickAxes(joystick);
 
     return axis < num_axes;
 }
@@ -119,7 +119,9 @@ void I_InitJoystick(void)
         return;
     }
 
-    if (joystick_index < 0 || joystick_index >= SDL_NumJoysticks())
+    int num_joysticks;
+    SDL_GetJoysticks(&num_joysticks);
+    if (joystick_index < 0 || joystick_index >= num_joysticks)
     {
         printf("I_InitJoystick: Invalid joystick ID: %i\n", joystick_index);
         SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
@@ -128,9 +130,9 @@ void I_InitJoystick(void)
 
     // Open the joystick
 
-    joystick = SDL_JoystickOpen(joystick_index);
+    joystick = SDL_OpenJoystick(joystick_index);
 
-    printf("I_InitJoystick: Found joystick: %s\n", SDL_JoystickName(joystick));
+    printf("I_InitJoystick: Found joystick: %s\n", SDL_GetJoystickName(joystick));
 
     if (joystick == NULL)
     {
@@ -148,16 +150,16 @@ void I_InitJoystick(void)
                "(run joystick setup again)\n",
                joystick_index);
 
-        SDL_JoystickClose(joystick);
+        SDL_CloseJoystick(joystick);
         joystick = NULL;
         SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
     }
 
-    SDL_JoystickEventState(SDL_ENABLE);
+    SDL_SetJoystickEventsEnabled(true);
 
     // Initialized okay!
 
-    printf("I_InitJoystick: %s\n", SDL_JoystickName(joystick));
+    printf("I_InitJoystick: %s\n", SDL_GetJoystickName(joystick));
 
     I_AtExit(I_ShutdownJoystick, true);
 }
@@ -214,7 +216,7 @@ static int ReadButtonState(int vbutton)
         return 0;
     }
 
-    return SDL_JoystickGetButton(joystick, physbutton);
+    return SDL_GetJoystickButton(joystick, physbutton);
 }
 
 // Get a bitmask of all currently-pressed buttons
@@ -257,11 +259,11 @@ static int GetAxisState(int axis, int invert)
 
     if (IS_BUTTON_AXIS(axis))
     {
-        if (SDL_JoystickGetButton(joystick, BUTTON_AXIS_NEG(axis)))
+        if (SDL_GetJoystickButton(joystick, BUTTON_AXIS_NEG(axis)))
         {
             result -= 32767;
         }
-        if (SDL_JoystickGetButton(joystick, BUTTON_AXIS_POS(axis)))
+        if (SDL_GetJoystickButton(joystick, BUTTON_AXIS_POS(axis)))
         {
             result += 32767;
         }
@@ -269,7 +271,7 @@ static int GetAxisState(int axis, int invert)
     else if (IS_HAT_AXIS(axis))
     {
         int direction = HAT_AXIS_DIRECTION(axis);
-        int hatval = SDL_JoystickGetHat(joystick, HAT_AXIS_HAT(axis));
+        int hatval = SDL_GetJoystickHat(joystick, HAT_AXIS_HAT(axis));
 
         if (direction == HAT_AXIS_HORIZONTAL)
         {
@@ -296,7 +298,7 @@ static int GetAxisState(int axis, int invert)
     }
     else
     {
-        result = SDL_JoystickGetAxis(joystick, axis);
+        result = SDL_GetJoystickAxis(joystick, axis);
 
         if (result < DEAD_ZONE && result > -DEAD_ZONE)
         {

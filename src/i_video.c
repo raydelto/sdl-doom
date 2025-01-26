@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdarg.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #define SDL_RESX 320 * 3 //FIXME: Do scaling via arg in video interface
 #define SDL_RESY 200 * 3
@@ -227,15 +227,22 @@ void I_InitGraphics (void)
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
         printf("I_InitGraphics: SDL_Init failed: %s\n", SDL_GetError());
-        atexit(SDL_Quit);
+        SDL_Quit();
         exit(1);
     }
     else 
     {
-        window = SDL_CreateWindow("DOOM", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-            SDL_RESX, SDL_RESY, SDL_WINDOW_SHOWN);
-        renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, 
+        SDL_PropertiesID props = SDL_CreateProperties();
+        SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "DOOM");
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_CENTERED);
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_CENTERED);
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, SDL_RESX);
+        SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, SDL_RESY);
+
+        window = SDL_CreateWindowWithProperties(props);
+        SDL_DestroyProperties(props);
+        renderer =  SDL_CreateRenderer(window, NULL);
+        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_XRGB8888, SDL_TEXTUREACCESS_TARGET, 
             SDL_RESX, SDL_RESY);
 
         fb_SDL = malloc(SDL_RESX * SDL_RESY * sizeof(uint32_t));    
@@ -318,7 +325,7 @@ void I_FinishUpdate (void)
 
 	SDL_UpdateTexture(texture, NULL, fb_SDL, SDL_RESX * sizeof(uint32_t));
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderTexture(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
 }
 

@@ -1,25 +1,16 @@
-cmake_minimum_required(VERSION 3.7)
-project(sdl2-doom)
+cmake_minimum_required(VERSION 3.10)
+project(sdl3-doom)
 
-find_package(SDL2 REQUIRED)
+find_package(SDL3 REQUIRED)
+find_package(SDL3_mixer REQUIRED)
 
 include_directories(./include)
 include_directories("/usr/local/include/")
-
-include_directories(${SDL2_INCLUDE_DIR})
-include_directories(${SDL2_MIXER_INCLUDE_DIR})
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-
-if(MINGW)
-    set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_mixer)
-endif()
+include_directories(${SDL3_INCLUDE_DIR})
+include_directories(${SDL3_MIXER_INCLUDE_DIR})
 
 add_definitions(-Wall -D_REENTRANT -D_THREAD_SAFE)
-
-add_executable(sdl2-doom src/i_main.c src/dummy.c src/am_map.c src/doomdef.c src/doomstat.c src/dstrings.c src/d_event.c
+add_executable(sdl3-doom src/i_main.c src/dummy.c src/am_map.c src/doomdef.c src/doomstat.c src/dstrings.c src/d_event.c
  src/d_items.c src/d_iwad.c src/d_loop.c src/d_main.c src/d_mode.c src/d_net.c src/f_finale.c src/f_wipe.c src/g_game.c src/hu_lib.c 
  src/hu_stuff.c src/info.c src/i_cdmus.c src/i_endoom.c src/i_joystick.c src/i_scale.c src/i_sound.c src/i_sdlmusic.c  
  src/i_sdlsound.c src/i_system.c src/i_timer.c src/i_input.c  src/i_video.c  src/mus2mid.c  src/memio.c src/m_argv.c 
@@ -30,4 +21,4 @@ add_executable(sdl2-doom src/i_main.c src/dummy.c src/am_map.c src/doomdef.c src
  src/r_sky.c src/r_things.c src/sha1.c src/sounds.c src/statdump.c src/st_lib.c  src/st_stuff.c  src/s_sound.c  src/tables.c  
  src/v_video.c  src/wi_stuff.c  src/w_checksum.c  src/w_file.c  src/w_main.c  src/w_wad.c  src/z_zone.c  src/w_file_stdc.c )
 
-target_link_libraries(sdl2-doom ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
+target_link_libraries(sdl3-doom PRIVATE ${SDL3_LIBRARIES} ${SDL3_mixer_LIBRARIES})

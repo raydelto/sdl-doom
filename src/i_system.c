@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "config.h"
 #include "deh_str.h"
@@ -258,7 +258,6 @@ void I_Error (char *error, ...)
 
     // Message first.
     va_start(argptr, error);
-    //fprintf(stderr, "\nError: ");
     vfprintf(stderr, error, argptr);
     fprintf(stderr, "\n\n");
     va_end(argptr);

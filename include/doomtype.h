@@ -62,22 +62,13 @@
 
 #include <inttypes.h>
 
-#ifdef __cplusplus
+#include <stdbool.h>
+
 
 // Use builtin bool type with C++.
 
 typedef bool boolean;
 
-#else
-
-typedef enum 
-{
-    false	= 0,
-    true	= 1,
-	undef	= 0xFFFFFFFF
-} boolean;
-
-#endif
 
 typedef uint8_t byte;
 
